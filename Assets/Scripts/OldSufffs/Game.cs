@@ -15,7 +15,7 @@ public class Game : MonoBehaviour
     {
         ////Instantiate(一個prefab, 座標, 四元數旋轉)
         //Instantiate(chessPiece, new Vector3(0, 0, -1), Quaternion.identity);
-        //Create(PieceType, xBoard, yBoard);
+        //CreateNumberText(PieceType, xBoard, yBoard);
         whitePieces = new GameObject[16]
         {
             Create(PieceType.WhiteRook, 0, 0),

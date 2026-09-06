@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - MovePlate
+  - NumberText
   layers:
   - Default
   - TransparentFX
