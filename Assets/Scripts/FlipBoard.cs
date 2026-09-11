@@ -6,6 +6,7 @@ public class FlipBoard : MonoBehaviour
     {
         GameObject controller = GameObject.FindGameObjectWithTag("GameController");
         controller.GetComponent<Controller>().FlipBoard();
+
     }
 
 }

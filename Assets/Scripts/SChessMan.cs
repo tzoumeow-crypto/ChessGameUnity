@@ -14,6 +14,8 @@ public class SChessMan : MonoBehaviour
     public bool isReal { get; set; } = true; //是否是棋盤上的棋子，還是右邊的選擇棋子
     public bool isUsed { get; set; }
 
+    public bool kingIsAttacked { get; set; } = false; //是否被攻擊，給king用的
+
 
 
     public string player { get; set; } = ""; //誰的棋子
@@ -21,6 +23,17 @@ public class SChessMan : MonoBehaviour
     //所有不同棋子的皮，要在Componant那邊有reference
     public Sprite whiteKing, whiteQueen, whiteBishop, whiteKnight, whiteRook, whitePawn;
     public Sprite blackKing, blackQueen, blackBishop, blackKnight, blackRook, blackPawn;
+
+
+    public void Start()
+    {
+        if (isUsed)
+        {
+
+        }
+    }
+
+
 
     public void Activate()
     {
@@ -46,22 +59,49 @@ public class SChessMan : MonoBehaviour
     }
 
     private void OnMouseDown()
+
+
     {
+        controller = GameObject.FindGameObjectWithTag("GameController");
+        Controller con = controller.GetComponent<Controller>();
+
+        //這裡才計算有點太慢了?改在SMovePlate就計算
+        //con.UpdateAttackSquares();
+        //con.UpdateOppoPieceSquares();
+        DestroyMovePlate();
         if (isReal && (pieceType == PieceType.WhiteKing || pieceType == PieceType.BlackKing))
         {
-            controller = GameObject.FindGameObjectWithTag("GameController");
-            Debug.Log($"Now is {controller.GetComponent<Game>().currentPlayer} to play");
+            
+            //Debug.Log($"Now is {con.currentPlayer} to play");
             //摧毀原本存在於board上的所有movePlate
-            DestroyMovePlate();
+
             //創造所有應該出現的MovePlates
-            CreateMovePlates();
+            if (player == con.currentPlayer)
+            {
+                con.KingMovePlate(gameObject, false);
+                SetReference(gameObject);
+            }
+            
 
         }
-        if(!isReal &&)
+        //如果是右邊的選擇棋子，且還沒被使用過，就可以被使用
+        else if (!isReal && !isUsed)
+        {
+            
+            //Debug.Log($"Now is {con.currentPlayer} to play");
+            if(player == con.currentPlayer)
+            {
+                
+                //創造所有應該出現的MovePlates
+                CreateMovePlates();
+                SetReference(gameObject);
+            }
+        }
+
     }
 
 
-    private void DestroyMovePlate()
+    public static void DestroyMovePlate()
     {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
         foreach (GameObject movePlate in movePlates)
@@ -70,9 +110,31 @@ public class SChessMan : MonoBehaviour
         }
     }
 
-    private void CreateMovePlates()
+    //這裡Create的是一班攻擊piece的MovePlate，並不是King的MovePlate
+    private void CreateMovePlates() 
     {
-        //controller = GameObject.FindGameObjectWithTag("GameController");
-        //SKingMovePlate();
+        //controller是GameObject，要調用Game的東西要使用GetComponant找下面的Script
+        controller = GameObject.FindGameObjectWithTag("GameController");
+        Controller con = controller.GetComponent<Controller>();
+        con.CalMovePlate(gameObject);
+
+        
+        
     }
+
+    private void SetReference(GameObject obj)
+    {
+        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
+        for (int i = 0; i < movePlates.Length; i++)
+        {
+            movePlates[i].GetComponent<SMovePlate>().SetReference(gameObject);
+            movePlates[i].transform.position = new Vector3(movePlates[i].transform.position.x, movePlates[i].transform.position.y, -2);
+        }
+    }
+
+
+
+
+
 }
+

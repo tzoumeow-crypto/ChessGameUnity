@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MovePlate
   - NumberText
+  - SChessPiece
   layers:
   - Default
   - TransparentFX
