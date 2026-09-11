@@ -1027,7 +1027,7 @@ public class Controller : MonoBehaviour
         {
             theEnd.SetActive(false);
             SChessMan.DestroyMovePlate();
-            if (gameBoards.Count <= 1)
+            if (howManyMoves <= 0)
             {
                 Debug.Log("目前gameboard為初始狀態");
                 return;
