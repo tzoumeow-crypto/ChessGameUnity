@@ -96,10 +96,14 @@ public class Controller : MonoBehaviour
             rKeyTimer += Time.deltaTime; // 累加每幀經過的時間
 
             // 達到 3 秒門檻
-            if (rKeyTimer >= 3)
+            if (rKeyTimer >= 1.5)
             {
                 ResetGameBoard();
+                SChessMan.DestroyMovePlate();
+                howManyMoves = 0;
+                currentPlayer = "white";
                 gameBoards = new List<PieceType?[,]>();
+                SaveGameBoard() ;
                 rKeyTimer = 0.0f; // 重置計時器，避免下一幀繼續重複觸發
             }
         }
@@ -108,6 +112,17 @@ public class Controller : MonoBehaviour
         {
             rKeyTimer = 0.0f;
         }
+
+
+        //if (howManyMoves % 2 == 0)
+        //{
+        //    currentPlayer = "white";
+        //}
+        //else
+        //{
+        //    currentPlayer = "black";
+        //}
+
     }
 
 
@@ -181,7 +196,7 @@ public class Controller : MonoBehaviour
         GameObject bb = CreateSChessPiece(PieceType.BlackBishop, 9, 5, false);
         GameObject bn = CreateSChessPiece(PieceType.BlackKnight, 9, 4, false);
         CreateSChessPiece(PieceType.BlackPawn, 9, 3, false);
-
+        currentPlayer = "white";
         return (wk, wq, wr, wb, wn, bk, bq, br, bb, bn);
     }
 
@@ -459,17 +474,22 @@ public class Controller : MonoBehaviour
             y += yDir;
         }
         //如果遇到棋子，則該格也算是攻擊格，
-        if (PositionIsOnBoard(x, y) && GetPosition(x, y) != null || (x == virtualBlockX && y == virtualBlockY))
+
+        if(PositionIsOnBoard(x, y))
         {
-            if (player == "white")
+            if (GetPosition(x, y) != null || (x == virtualBlockX && y == virtualBlockY))
             {
-                whiteAtkSquare[x, y] = true;
-            }
-            else if (player == "black")
-            {
-                blackAtkSquare[x, y] = true;
+                if (player == "white")
+                {
+                    whiteAtkSquare[x, y] = true;
+                }
+                else if (player == "black")
+                {
+                    blackAtkSquare[x, y] = true;
+                }
             }
         }
+        
     }
 
     public void KnightAtkSquare(GameObject AttackingPiece)
@@ -1085,7 +1105,15 @@ public class Controller : MonoBehaviour
             }
         }
         //全部重新Update
-        currentPlayer = currentPlayer == "white" ? "black" : "white";
+        if (howManyMoves % 2 == 0)
+        {
+            currentPlayer = "white";
+        }
+        else
+        {
+            currentPlayer = "black";
+        }
+
         UpdateAttackSquares();
         UpdateOppoPieceSquares();
         CheckIfKingIsAttacked();
